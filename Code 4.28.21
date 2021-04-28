@@ -1,0 +1,127 @@
+#libraries and stuff
+import pygame
+pygame.init()
+
+#screen
+screen = pygame.display.set_mode((700,500))
+pygame.display.set_caption("Pro Hockey")
+
+#exit condition
+doExit=False
+
+#refresh rate
+clock = pygame.time.Clock()
+
+#variables
+p2Score=0
+p1Score=0
+#paddles
+p1x=20
+p1y=200
+p2x=660
+p2y=200
+#ball
+bx=350
+by=250
+#velocity
+bVx=5
+bVy=5
+
+#loop
+while not doExit:
+
+  #FPS
+  clock.tick(90)
+
+  for event in pygame.event.get():#checks if the user did something
+    if event.type ==pygame.QUIT:#check if the user clicked close
+      doExit=True #exit variable now true
+  #game logic----
+  ##########first player
+  #players keys 
+  keys = pygame.key.get_pressed()
+  if keys[pygame.K_w]:
+    p1y-=5
+  if keys[pygame.K_s]:
+    p1y+=5
+  if keys[pygame.K_a]:
+    p1x-=5
+  if keys[pygame.K_d]:
+    p1x+=5
+###########second player
+#players keys
+  if keys[pygame.K_LEFT]:
+    p2x -=5
+  if keys[pygame.K_RIGHT]:
+    p2x+=5
+  if keys [pygame.K_UP]:
+    p2y-=5
+  if keys[pygame.K_DOWN]:
+    p2y+=5
+    
+  bx += bVx
+  by += bVy
+
+  if bx+20 < 0:#left wall 
+  #ball speed
+    bx=21
+    bVx *= -1
+    p1Score+=1
+  if bx + 20 > 700:#right wall
+  # collision
+  #ball speed
+    bx = 679
+    bVx *=-1
+    p2Score+=1
+
+  if by < 0 or by + 20 > 500:#bottom and top wall collision
+    bVy *= -1
+
+  #if p1y <30 or p1y +40 >500: #or p1x >30 or p1x <670:#keeps player from going off-screen
+   # p1y *=-1
+  if p1y + 30>500:
+      p1y = 500-30
+  if p1y <30:
+      p1y = 30
+
+
+  if p2y + 30>500:
+      p2y = 500-30
+  if p2y <30:
+      p2y = 30
+
+  if p2x<380:
+      p2x = 380
+  print (p2x)
+  
+  #stop player 1 from crossing midpoint
+  if p1x>320:
+      p1x = 320
+  print (p1x)
+
+
+
+  if bx < p1x + 30 and by + 20 < p1y + 30 and by+20 > p1y:
+    bVx *= -1
+  if bx+20 > p2x and by - 21 < p2y + 30 and by + 30 > p2y:
+    bVx *= -1
+
+  
+  #rendering----
+  screen.fill((0,0,255))#wipe screen black
+  pygame.draw.line(screen, (255,255,255),[349,0],[349,500],10)
+  #pygame.draw.rect(screen, (255,255,255),(p1x,p1y,30,30))#player1
+  pygame.draw.circle(screen, (255,255,255),[p1x,p1y],30)#new player 1
+  pygame.draw.circle(screen, (255,255,255),[p2x,p2y],30)#new player2
+  
+  pygame.draw.circle(screen,(255,255,255),(350,250),60,10)
+  #pygame.draw.rect(screen, (255,255,255),(p2x,p2y,30,30))#player2
+
+  pygame.draw.circle(screen, (255,255,255),[bx,by],12)
+  font = pygame.font.Font(None, 74)
+  text = font.render(str(p1Score),1,(255,255,255))
+  screen.blit(text,(250,10))
+  text = font.render(str(p2Score),1,(255,255,255))
+  screen.blit(text,(420,10))
+  pygame.display.flip()#updates game
+pygame.quit()#closes "game"
